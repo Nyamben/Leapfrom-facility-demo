@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHC ANC Screener + CDSS — mock-up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon1:#6c1733; --maroon2:#9c1c4f;
+    --pink1:#ec4a8b; --pink2:#d51f6c;
+    --navy1:#1c2a5e; --navy2:#26326f;
+    --ink:#1f2a44; --muted:#6b7280; --bn:#5b6478;
+    --page:#eef0f4; --card:#ffffff; --line:#e7e9ee;
+    --green-bg:#e6f7ee; --green:#147a4a; --green-tick:#1aa45a;
+    --amber-bg:#fff4e2; --amber:#b3650b; --amber-bd:#f3cf9b;
+    --red-bg:#fdeceb; --red:#c0392b; --red-bd:#f1b6b1;
+    --blue-bg:#eef1fc; --blue:#2b3a86;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Hind Siliguri','Poppins',system-ui,sans-serif;background:#dfe2e8;color:var(--ink);
+       display:flex;flex-direction:column;align-items:center;padding:22px 12px 40px;min-height:100vh}
+  h1,h2,h3,.dsp{font-family:'Poppins','Hind Siliguri',sans-serif}
+  .bn{font-family:'Hind Siliguri',sans-serif;color:var(--bn);font-size:13px;display:block;margin-top:2px}
+
+  .toolbar{display:flex;gap:8px;align-items:center;margin-bottom:14px;background:#fff;padding:8px 12px;
+           border-radius:999px;box-shadow:0 4px 14px rgba(20,30,60,.10);flex-wrap:wrap;justify-content:center}
+  .toolbar span{font-size:13px;color:var(--muted);font-weight:600}
+  .seg{display:inline-flex;background:#f0f1f5;border-radius:999px;padding:3px}
+  .seg button{border:0;background:transparent;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;
+               color:var(--muted);padding:7px 16px;border-radius:999px;cursor:pointer}
+  .seg button.active{background:var(--maroon2);color:#fff;box-shadow:0 2px 8px rgba(156,28,79,.35)}
+  .restart{border:0;background:#f0f1f5;color:var(--ink);font-weight:600;font-size:12px;padding:8px 12px;border-radius:999px;cursor:pointer}
+
+  .phone{width:392px;max-width:100%;background:#0d0f1a;border-radius:42px;padding:10px;
+         box-shadow:0 22px 60px rgba(15,20,40,.35)}
+  .scr{background:var(--page);border-radius:33px;overflow:hidden;min-height:760px;display:flex;flex-direction:column}
+
+  /* header */
+  .hdr{background:linear-gradient(135deg,var(--maroon1),var(--maroon2));color:#fff;padding:18px 18px 14px}
+  .hdr .lvl{font-size:11px;opacity:.8;letter-spacing:.3px}
+  .hdr .pt{display:flex;gap:10px;margin-top:8px;align-items:center}
+  .av{width:42px;height:42px;border-radius:50%;background:#f4b9d2;display:grid;place-items:center;font-size:20px;flex:none}
+  .hdr h2{font-size:19px;font-weight:700;line-height:1.1}
+  .hdr .sub{font-size:12px;opacity:.85;margin-top:2px}
+  .steps{display:flex;gap:6px;margin-top:13px}
+  .steps .b{flex:1;height:4px;border-radius:3px;background:rgba(255,255,255,.28)}
+  .steps .b.on{background:#fff}
+  .steplab{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;opacity:.85}
+  .steplab b{font-weight:600;opacity:1}
+
+  .body{padding:16px;flex:1;overflow:auto}
+
+  .ai{background:linear-gradient(135deg,var(--navy1),var(--navy2));color:#fff;border-radius:16px;padding:14px 15px;margin-bottom:14px}
+  .ai .k{font-size:11px;letter-spacing:.6px;font-weight:700;opacity:.9;display:flex;align-items:center;gap:7px}
+  .ai .big{font-family:'Hind Siliguri';font-size:18px;font-weight:700;margin-top:8px;line-height:1.35}
+  .ai .en{font-size:13px;opacity:.86;margin-top:4px}
+  .ai .tip{background:rgba(255,255,255,.12);border-radius:11px;padding:10px 12px;font-size:12.5px;margin-top:11px;opacity:.95}
+
+  .briefcard{background:#fff;border-radius:16px;padding:14px 15px;margin-bottom:14px;box-shadow:0 3px 12px rgba(20,30,60,.06)}
+  .briefcard .pill{display:inline-flex;gap:7px;align-items:center;background:#eef1fc;color:var(--blue);font-weight:700;font-size:12.5px;padding:7px 10px;border-radius:999px;margin-bottom:10px}
+  .alertline{background:#fdeef4;border-left:4px solid var(--pink1);border-radius:10px;padding:11px 13px;font-size:13.5px;color:#7a2447;line-height:1.45}
+  .also{margin-top:12px;font-size:12px;color:var(--muted)}
+  .chip{display:inline-flex;gap:6px;align-items:center;background:#fbe9c9;color:#8a5b08;border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;margin-top:6px}
+
+  .sec{font-size:11.5px;letter-spacing:.5px;color:var(--muted);font-weight:700;margin:6px 2px 10px}
+  .sec.dz{color:var(--red)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .opt{background:#fff;border:2px solid transparent;border-radius:16px;padding:14px 8px;text-align:center;cursor:pointer;
+       box-shadow:0 2px 8px rgba(20,30,60,.05);transition:.12s}
+  .opt .em{font-size:26px}
+  .opt .t{font-family:'Poppins';font-weight:600;font-size:13.5px;margin-top:6px}
+  .opt:active{transform:scale(.98)}
+  .opt.sel{background:var(--green-bg);border-color:var(--green-tick)}
+  .opt.sel .t{color:var(--green)}
+  .opt.sel .t::after{content:" ✓"}
+  .dz .opt.sel,.opt.dzsel{background:var(--red-bg);border-color:var(--red-bd)}
+  .dz .opt.sel .t,.opt.dzsel .t{color:var(--red)}
+  .dz .opt.sel .t::after,.opt.dzsel .t::after{content:" !"}
+
+  .referbar{display:none;background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);
+            border-radius:13px;padding:12px 14px;margin-top:14px;font-weight:700;font-size:13.5px}
+  .referbar.show{display:block}
+
+  .otherbox{display:flex;align-items:center;gap:10px;background:#fff;border:2px dashed var(--line);
+            border-radius:14px;padding:13px 14px;margin-top:11px;cursor:text}
+  .otherbox:focus-within{border-color:var(--maroon2);border-style:solid}
+  .otherbox .oicon{font-size:18px;flex:none}
+  .otherbox input{border:0;outline:0;flex:1;font-family:'Hind Siliguri','Poppins',sans-serif;font-size:14px;color:var(--ink);background:transparent}
+  .otherbox input::placeholder{color:#9aa1ad}
+
+  /* check rows */
+  .crow{background:#fff;border-radius:16px;padding:13px 14px;margin-bottom:11px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(20,30,60,.05)}
+  .crow .ico{width:40px;height:40px;border-radius:11px;background:#fbe4ee;display:grid;place-items:center;font-size:19px;flex:none}
+  .crow .mid{flex:1}
+  .crow .mid .ct{font-family:'Poppins';font-weight:600;font-size:14px}
+  .crow .mid .cd{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
+  .val{font-family:'Poppins';font-weight:800;font-size:21px;text-align:right;line-height:1}
+  .val small{display:block;font-size:11px;font-weight:600;margin-top:4px}
+  .val.green{color:var(--green)} .val.green small{color:var(--green-tick)}
+  .val.red{color:var(--red)} .val.red small{color:var(--red)}
+  .tag{font-size:11px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap}
+  .tag.g{background:var(--green-bg);color:var(--green)}
+  .tag.a{background:var(--amber-bg);color:var(--amber)}
+
+  .verdict{border-radius:15px;padding:14px 15px;margin-top:6px;font-size:13.5px;line-height:1.45;display:flex;gap:11px}
+  .verdict .vi{font-size:20px;flex:none}
+  .verdict.amber{background:var(--amber-bg);border:1px solid var(--amber-bd)}
+  .verdict.amber .vt{color:var(--amber);font-weight:700}
+  .verdict.green{background:var(--green-bg)} .verdict.green .vt{color:var(--green);font-weight:700}
+  .refln{font-size:11px;color:var(--muted);margin-top:10px;text-align:center}
+
+  /* decision */
+  .dxhead{background:linear-gradient(135deg,var(--navy1),var(--navy2));color:#fff;border-radius:14px;padding:12px 14px;margin-bottom:13px;font-size:12px}
+  .dxhead b{font-family:'Poppins';font-size:14px;display:block;margin-bottom:3px}
+  .dx{background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:15px;padding:13px 15px;margin-bottom:14px}
+  .dx h3{font-family:'Poppins';color:#7a4708;font-size:16px;margin-bottom:5px}
+  .dx p{font-size:13px;color:#7a5418;line-height:1.45}
+  .acts .a{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .acts .a:last-child{border-bottom:0}
+  .acts .n{width:25px;height:25px;border-radius:50%;background:#dff0e6;color:var(--green);display:grid;place-items:center;font-weight:700;font-size:12.5px;flex:none;font-family:'Poppins'}
+  .acts .a.warn .n{background:var(--red-bg);color:var(--red)}
+  .acts .a.stop .n{background:#f1e9fb;color:#6a37c9}
+  .acts .tx{font-size:13.5px;line-height:1.45}
+  .acts .tx b{font-weight:700}
+  .acts .tx .cav{display:block;font-size:11.5px;color:var(--red);margin-top:2px}
+  .note{font-size:11.5px;color:var(--muted);background:#f4f5f8;border-radius:11px;padding:10px 12px;margin-top:13px;line-height:1.4}
+
+  .tell .a .n{background:#d9f0e3}
+  .tell .a.warn .n{background:var(--red-bg)}
+
+  /* whatsapp send-to-patient */
+  .wa-intro{font-size:13px;color:var(--muted);margin:2px 2px 12px;line-height:1.4}
+  .wa-card{background:#fff;border-radius:16px;padding:12px;box-shadow:0 2px 8px rgba(20,30,60,.05);margin-bottom:12px}
+  .wa-head{display:flex;align-items:center;gap:8px;font-family:'Poppins';font-weight:700;font-size:13.5px;color:#0f7a3d;margin-bottom:4px}
+  .wa-to{font-size:11.5px;color:var(--muted);margin-bottom:10px}
+  .wa-preview{background:#e7f6ec;border-radius:14px;padding:6px 8px 8px}
+  .wa-bubble{background:#fff;border-radius:0 12px 12px 12px;padding:10px 12px;font-size:12.5px;line-height:1.5;box-shadow:0 1px 2px rgba(0,0,0,.08);position:relative}
+  .wa-bubble + .wa-bubble{margin-top:6px;border-radius:12px}
+  .wa-bubble b{font-weight:700}
+  .wa-bn{font-family:'Hind Siliguri';color:#444;display:block;margin-top:5px;font-size:12px}
+  .wa-time{display:block;text-align:right;font-size:9.5px;color:#9aa1ad;margin-top:3px}
+  .wa-toggle{display:flex;gap:6px;margin:11px 2px}
+  .wa-toggle button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px;font-family:'Poppins';font-weight:600;font-size:12px;color:var(--muted);cursor:pointer}
+  .wa-toggle button.on{border-color:#0f7a3d;color:#0f7a3d;background:#eafaf0}
+  .wa-consent{display:flex;align-items:flex-start;gap:9px;background:#fff8e8;border:1px solid var(--amber-bd);border-radius:12px;padding:11px 12px;font-size:12px;color:#7a5418;margin-bottom:4px;line-height:1.4}
+  .wa-consent input{margin-top:2px;width:16px;height:16px;flex:none;accent-color:#0f7a3d}
+  .wa-send{width:100%;border:0;cursor:pointer;background:#1aa45a;color:#fff;font-family:'Poppins';font-weight:700;font-size:15px;padding:14px;border-radius:13px;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 6px 16px rgba(26,164,90,.3);margin-top:4px}
+  .wa-send:disabled{background:#bcd9c7;box-shadow:none;cursor:not-allowed}
+  .wa-send:active:not(:disabled){transform:translateY(1px)}
+
+  /* prescribe / acknowledge */
+  .rx-intro{font-size:13px;color:var(--muted);margin:2px 2px 12px;line-height:1.4}
+  .rx-item{background:#fff;border-radius:14px;padding:12px 13px;margin-bottom:11px;box-shadow:0 2px 8px rgba(20,30,60,.05);border-left:4px solid var(--line)}
+  .rx-item.acc{border-left-color:var(--green-tick)}
+  .rx-item.mod{border-left-color:var(--amber)}
+  .rx-item.dec{border-left-color:#c0392b;opacity:.65}
+  .rx-rec{font-size:13px;line-height:1.4;margin-bottom:9px}
+  .rx-rec b{font-weight:700}
+  .rx-rec .lbl{display:block;font-size:10px;font-weight:700;letter-spacing:.4px;color:var(--muted);text-transform:uppercase;margin-bottom:3px}
+  .rx-btns{display:flex;gap:6px}
+  .rx-btns button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 4px;font-family:'Poppins';font-weight:600;font-size:12px;color:var(--muted);cursor:pointer;transition:.1s}
+  .rx-btns button.sel[data-act="accept"]{background:var(--green-bg);border-color:var(--green-tick);color:var(--green)}
+  .rx-btns button.sel[data-act="modify"]{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+  .rx-btns button.sel[data-act="decline"]{background:var(--red-bg);border-color:var(--red-bd);color:#c0392b}
+  .rx-extra{margin-top:9px;display:none}
+  .rx-extra.show{display:block}
+  .rx-extra input{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:9px 10px;font-family:inherit;font-size:13px;color:var(--ink);outline:0}
+  .rx-extra input:focus{border-color:var(--maroon2)}
+  .rx-extra .hint{font-size:10.5px;color:var(--muted);margin-top:4px}
+  .rx-choice{display:flex;gap:6px;margin-bottom:8px}
+  .rx-choice button{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:9px 6px;font-family:'Poppins';font-weight:600;font-size:12.5px;color:var(--ink);cursor:pointer;line-height:1.25}
+  .rx-choice button.on{border-color:var(--green-tick);background:var(--green-bg);color:var(--green)}
+  .rx-prescriber{font-size:11.5px;color:var(--muted);background:#f4f5f8;border-radius:10px;padding:9px 12px;margin:2px 0 12px}
+  .rx-prescriber b{color:var(--ink)}
+  .rx-avoid{background:var(--red-bg);border:1px solid var(--red-bd);border-radius:11px;padding:10px 12px;font-size:12px;color:#a5342a;line-height:1.4;margin-top:2px}
+  .rx-avoid b{font-weight:700}
+  .rx-summary{background:#eef1fc;border-radius:13px;padding:12px 14px;margin-top:4px;font-size:12.5px;color:var(--blue);line-height:1.55}
+  .rx-summary .rh{font-family:'Poppins';font-weight:700;margin-bottom:6px;display:block}
+  .rx-summary .ri{display:block;margin-bottom:3px}
+
+  /* complete */
+  .done{background:linear-gradient(135deg,var(--maroon1),var(--maroon2));color:#fff;border-radius:18px;padding:22px;text-align:center;margin-bottom:14px}
+  .done .ck{width:54px;height:54px;border-radius:14px;background:#1aa45a;display:grid;place-items:center;font-size:28px;margin:0 auto 12px}
+  .done h2{font-size:21px}
+  .done .ds{font-size:13px;opacity:.85;margin-top:5px}
+  .dots{display:flex;gap:10px;justify-content:center;margin-top:14px}
+  .dots .d{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-family:'Poppins';font-size:14px}
+  .dots .d.on{background:#1aa45a;color:#fff}
+  .dots .d.off{background:rgba(255,255,255,.18);color:rgba(255,255,255,.6)}
+  .summary{background:#fdeef4;border-radius:15px;padding:14px 16px;margin-bottom:13px}
+  .summary .st{display:inline-block;background:var(--pink2);color:#fff;font-size:11px;font-weight:700;padding:4px 11px;border-radius:999px;margin-bottom:11px;font-family:'Poppins'}
+  .summary .sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px}
+
+  /* teleconsult escalation block */
+  .teleconsult{margin-top:14px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(20,30,60,.05)}
+  .tc-label{font-family:'Poppins';font-weight:700;font-size:13.5px;color:var(--ink);text-align:center;margin-bottom:12px}
+  .callbtn{width:100%;border:0;cursor:pointer;background:linear-gradient(135deg,var(--pink1),var(--pink2));color:#fff;
+           font-family:'Poppins';font-weight:700;font-size:15px;padding:14px;border-radius:13px;
+           display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 6px 16px rgba(213,31,108,.32)}
+  .callbtn .bn-inline{font-family:'Hind Siliguri';font-weight:600;font-size:11.5px;opacity:.9}
+  .bookbtn{width:100%;border:1.5px solid var(--line);cursor:pointer;background:#fff;color:var(--navy1);
+           font-family:'Poppins';font-weight:700;font-size:14.5px;padding:13px;border-radius:13px;margin-top:9px}
+  .callbtn:active,.bookbtn:active{transform:translateY(1px)}
+
+  .cta{margin-top:auto;padding:14px 16px 18px}
+  .btn{display:block;width:100%;border:0;cursor:pointer;background:linear-gradient(135deg,var(--pink1),var(--pink2));
+       color:#fff;font-family:'Poppins';font-weight:700;font-size:15.5px;padding:15px;border-radius:15px;
+       box-shadow:0 8px 20px rgba(213,31,108,.35)}
+  .btn.ghost{background:#fff;color:var(--maroon2);box-shadow:0 2px 10px rgba(20,30,60,.08);margin-top:9px}
+  .btn:active{transform:translateY(1px)}
+
+  .foot{max-width:392px;margin-top:14px;font-size:11.5px;color:#5d6472;text-align:center;line-height:1.5}
+  .scrn{display:none}.scrn.live{display:flex;flex-direction:column;flex:1}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span>CDSS condition:</span>
+  <div class="seg" id="seg">
+    <button data-cond="anaemia" class="active">Moderate anaemia</button>
+    <button data-cond="uti">UTI in pregnancy</button>
+  </div>
+  <button class="restart" id="restart">↺ Restart</button>
+</div>
+
+<div class="phone">
+  <div class="scr">
+    <!-- HEADER -->
+    <div class="hdr">
+      <div class="lvl">Union Health &amp; Family Welfare Centre · PHC · ANC</div>
+      <div class="pt">
+        <div class="av">🤰</div>
+        <div>
+          <h2>Nasrin Begum</h2>
+          <div class="sub">Age 24 · Pregnant 32 wks · ANC Visit 2</div>
+        </div>
+      </div>
+      <div class="steps"><div class="b" id="b0"></div><div class="b" id="b1"></div><div class="b" id="b2"></div></div>
+      <div class="steplab"><span id="l0">Greet &amp; listen</span><span id="l1">Quick checks</span><span id="l2">AI advice</span></div>
+    </div>
+
+    <div class="body" id="body">
+
+      <!-- 0 BRIEF -->
+      <div class="scrn" data-screen="brief">
+        <div class="briefcard">
+          <span class="pill">⭐ Before you call her in · AI brief</span>
+          <div class="alertline" id="briefText"></div>
+        </div>
+        <div class="ai">
+          <div class="k">👋 GREET HER — PUT HER AT EASE</div>
+          <div class="big">"আপু, আপনি কেমন আছেন? বাচ্চা ভালো নড়াচড়া করছে?"</div>
+          <div class="en">"Sister, how are you? Is the baby moving well?"</div>
+          <div class="tip">💡 Sit her down; ask how she's been and whether anything's bothering her — before the checks.</div>
+        </div>
+      </div>
+
+      <!-- 1 SCREENER (shared) -->
+      <div class="scrn" data-screen="screener">
+        <div class="sec">WHAT DOES SHE SAY? TAP ALL THAT APPLY 👇</div>
+        <div class="grid" id="commonGrid"></div>
+        <label class="otherbox"><span class="oicon">✏️</span><input id="otherInput" type="text" placeholder="Other — type what she says · অন্য কিছু লিখুন"></label>
+        <div class="referbar" id="referbar">⚠ This is a danger sign → stop the routine flow and refer to UHC now.<span class="bn">এটি বিপদ চিহ্ন — এখনই UHC-তে পাঠান।</span></div>
+      </div>
+
+      <!-- 2 CHECKS: anaemia -->
+      <div class="scrn" data-screen="checks" data-cond="anaemia">
+        <div class="ai"><div class="k">🔎 AI TRIAGE</div>
+          <div class="en" style="opacity:1;font-size:13.5px">Tired + dizzy — screen for anaemia. Do a pallor check and a finger-prick haemoglobin.</div></div>
+        <div class="sec">AI ASKS — CHECK THESE NOW 👇</div>
+        <div class="crow"><div class="ico">💪</div><div class="mid"><div class="ct">Blood pressure</div><div class="cd">Auto from device</div></div><div class="val green">108/70<small>Normal ✓</small></div></div>
+        <div class="crow"><div class="ico">💓</div><div class="mid"><div class="ct">Pulse</div><div class="cd">Auto from device</div></div><div class="val">106<small style="color:var(--amber)">mildly raised</small></div></div>
+        <div class="crow"><div class="ico">👁️</div><div class="mid"><div class="ct">Look at eyelids, palms, tongue</div><div class="cd">Pale or not?</div></div><span class="tag a">Pale</span></div>
+        <div class="crow"><div class="ico">🩸</div><div class="mid"><div class="ct">Haemoglobin — finger-prick</div><div class="cd">Point-of-care meter</div></div><div class="val red">8.5<small>Moderate</small></div></div>
+        <div class="verdict amber"><span class="vi">🟠</span><div><span class="vt">Finding: moderate anaemia (Hb 8.5 g/dL).</span> Treat now.</div></div>
+        <div class="refln">WHO 2024 (trimester-specific). At 32 wks / 3rd trimester: normal ≥11 · mild 10–10.9 · moderate 7–9.9 · severe &lt;7 g/dL. (2nd-trimester normal is ≥10.5.)</div>
+      </div>
+
+      <!-- 2 CHECKS: uti -->
+      <div class="scrn" data-screen="checks" data-cond="uti">
+        <div class="ai"><div class="k">🔎 AI TRIAGE</div>
+          <div class="en" style="opacity:1;font-size:13.5px">Burning urine + frequency + lower-belly pain — screen for UTI. Do a urine dipstick and a temperature.</div></div>
+        <div class="sec">AI ASKS — CHECK THESE NOW 👇</div>
+        <div class="crow"><div class="ico">💪</div><div class="mid"><div class="ct">Blood pressure</div><div class="cd">Auto from device</div></div><div class="val green">110/72<small>Normal ✓</small></div></div>
+        <div class="crow"><div class="ico">🌡️</div><div class="mid"><div class="ct">Temperature</div><div class="cd">Auto from device</div></div><div class="val">37.6°<small style="color:var(--amber)">low-grade</small></div></div>
+        <div class="crow"><div class="ico">🤚</div><div class="mid"><div class="ct">Press the loin / lower back</div><div class="cd">Pain there = kidney (pyelonephritis)</div></div><span class="tag g">No flank pain ✓</span></div>
+        <div class="crow"><div class="ico">🧪</div><div class="mid"><div class="ct">Urine dipstick</div><div class="cd">Nitrites &amp; leukocytes</div></div><div class="val red" style="font-size:15px">Nitrite +<small>Leuko +</small></div></div>
+        <div class="verdict amber"><span class="vi">🟠</span><div><span class="vt">Finding: likely lower UTI (cystitis).</span> No fever spike or flank pain — no pyelonephritis signs.</div></div>
+      </div>
+
+      <!-- 3 DECISION: anaemia -->
+      <div class="scrn" data-screen="decision" data-cond="anaemia">
+        <div class="dxhead"><b>🩺 AI Clinical Decision</b>Works offline · on-device · Bangladesh ANC guidance</div>
+        <div class="dx"><h3>Moderate anaemia in pregnancy</h3><p>Hb 8.5 g/dL (WHO 2024, 3rd trimester: moderate = 7–9.9) · 32 weeks · pale + tired. Treat now, find the cause, recheck in 4 weeks.</p></div>
+        <div class="sec">💊 PRESCRIBE — accept or change each</div>
+        <div class="rxz" data-cond="anaemia"></div>
+        <div class="sec" style="margin-top:16px">PLAN &amp; ESCALATION</div>
+        <div class="acts">
+          <div class="a"><div class="n">📅</div><div class="tx"><b>Recheck haemoglobin in 4 weeks</b> — expect a rise of 1–2 g/dL. No rise → refer for cause.</div></div>
+          <div class="a warn"><div class="n">!</div><div class="tx"><b>Refer to UHC if:</b> Hb &lt;7 (severe), breathless at rest, chest pain, or anaemia still present near term.</div></div>
+        </div>
+        <div class="note">Dose per WHO ANC guidance; anaemia thresholds per WHO 2024 (trimester-specific). Mock-up for review — not a medical device.</div>
+        <div class="teleconsult">
+          <div class="tc-label">📞 Initiate teleconsult with a doctor</div>
+          <button class="callbtn">📟 Call a doctor now <span class="bn-inline">ডাক্তারকে এখনই ফোন করুন</span></button>
+          <button class="bookbtn">Book appointment &amp; refer →</button>
+        </div>
+      </div>
+
+      <!-- 3 DECISION: uti -->
+      <div class="scrn" data-screen="decision" data-cond="uti">
+        <div class="dxhead"><b>🩺 AI Clinical Decision</b>Works offline · on-device · Bangladesh ANC guidance</div>
+        <div class="dx"><h3>Likely UTI (cystitis) in pregnancy</h3><p>Dipstick nitrite + / leukocyte + · no fever or flank pain · 32 weeks. Treat per the Bangladesh STG, filtered for pregnancy safety; watch for kidney spread.</p></div>
+        <div class="sec">💊 PRESCRIBE — choose the antibiotic</div>
+        <div class="rxz" data-cond="uti"></div>
+        <div class="rx-avoid">✕ <b>Avoid in pregnancy:</b> co-trimoxazole (folate antagonist / neonatal jaundice) and ciprofloxacin (fluoroquinolone — risk to fetal cartilage/joints).</div>
+        <div class="sec" style="margin-top:16px">PLAN &amp; ESCALATION</div>
+        <div class="acts">
+          <div class="a"><div class="n">📅</div><div class="tx"><b>Test of cure</b> — repeat urine test after treatment / at next visit.</div></div>
+          <div class="a"><div class="n">🧫</div><div class="tx"><b>Culture if no response:</b> if no better in 48 hrs or symptoms recur, send urine for culture &amp; sensitivity — only ~2 in 3 E. coli here are susceptible to 3rd-gen cephalosporins, so empirical choice can fail.</div></div>
+          <div class="a warn"><div class="n">!</div><div class="tx"><b>Refer to UHC urgently if:</b> fever with chills, back/flank pain, vomiting, or tightening pains (preterm labour) — manage as pyelonephritis.</div></div>
+        </div>
+        <div class="note">Source: Bangladesh STG on Antibiotic Use (v1.0, Dec 2021). That table is general adult UTI — pregnancy-safety filtering and the local antibiogram still apply. Not a medical device.</div>
+        <div class="teleconsult">
+          <div class="tc-label">📞 Initiate teleconsult with a doctor</div>
+          <button class="callbtn">📟 Call a doctor now <span class="bn-inline">ডাক্তারকে এখনই ফোন করুন</span></button>
+          <button class="bookbtn">Book appointment &amp; refer →</button>
+        </div>
+      </div>
+
+      <!-- 4 COUNSEL: anaemia -->
+      <div class="scrn" data-screen="counsel" data-cond="anaemia">
+        <div class="sec">WHAT TO TELL NASRIN TODAY</div>
+        <div class="acts tell">
+          <div class="a"><div class="n">1</div><div class="tx"><b>Take iron + folic acid every day</b> — don't stop, even when you feel better.</div></div>
+          <div class="a"><div class="n">2</div><div class="tx"><b>Don't drink tea or coffee around the time you take it</b> — wait about an hour; lemon or guava water can help.</div></div>
+          <div class="a"><div class="n">3</div><div class="tx"><b>Eat iron-rich food often</b> — lentils, eggs, green vegetables or fish.</div></div>
+          <div class="a"><div class="n">🏥</div><div class="tx"><b>Birth-preparedness (last baby born at home):</b> agree a facility birth plan now — where, transport, who accompanies her, money set aside, danger signs that mean go immediately.</div></div>
+          <div class="a warn"><div class="n">⚠</div><div class="tx"><b>Go to UHC / hospital now if:</b> heavy bleeding, severe headache, blurred vision, baby stops moving, fits, or breathless at rest.</div></div>
+          <div class="a"><div class="n">📅</div><div class="tx"><b>Come back on 17 June 2026 (36 weeks)</b> for your blood recheck.</div></div>
+        </div>
+      </div>
+
+      <!-- 4 COUNSEL: uti -->
+      <div class="scrn" data-screen="counsel" data-cond="uti">
+        <div class="sec">WHAT TO TELL NASRIN TODAY</div>
+        <div class="acts tell">
+          <div class="a"><div class="n">1</div><div class="tx"><b>Finish all the tablets</b> — even if you feel better after a day or two.</div></div>
+          <div class="a"><div class="n">2</div><div class="tx"><b>Drink lots of water and pass urine often</b> — don't hold it in.</div></div>
+          <div class="a"><div class="n">3</div><div class="tx"><b>Keep clean</b> — wipe front to back; pass urine after intercourse.</div></div>
+          <div class="a"><div class="n">🏥</div><div class="tx"><b>Birth-preparedness (last baby born at home):</b> agree a facility birth plan now — where, transport, who accompanies her, money set aside, danger signs that mean go immediately.</div></div>
+          <div class="a warn"><div class="n">⚠</div><div class="tx"><b>Go to hospital now if:</b> fever, back pain, vomiting, tightening pains, or any bleeding.</div></div>
+          <div class="a"><div class="n">📅</div><div class="tx"><b>Come back on 17 June 2026 (36 weeks)</b>, and sooner for a urine recheck after treatment.</div></div>
+        </div>
+      </div>
+
+      <!-- 4b SEND TO PATIENT (shared) -->
+      <div class="scrn" data-screen="whatsapp">
+        <div class="wa-intro">Send the same advice to Nasrin's phone so she has it at home. She gets a plain-language summary — no clinical codes or readings.</div>
+        <div class="wa-card">
+          <div class="wa-head">🟢 WhatsApp · message preview</div>
+          <div class="wa-to">To: Nasrin Begum · +880 1XXX-XXXXXX (from her ANC record)</div>
+          <div class="wa-preview" id="waPreview"></div>
+        </div>
+        <div class="wa-toggle">
+          <button class="on" data-lang="bn">বাংলা</button>
+          <button data-lang="en">English</button>
+          <button data-lang="both">Both</button>
+        </div>
+        <label class="wa-consent"><input type="checkbox" id="waConsent"><span>Nasrin has agreed to receive health messages on this number. <span class="bn">নাসরিন এই নম্বরে বার্তা পেতে সম্মত হয়েছেন।</span></span></label>
+        <button class="wa-send" id="waSend" disabled>🟢 Send to Nasrin's phone</button>
+      </div>
+
+      <!-- 5 COMPLETE (shared) -->
+      <div class="scrn" data-screen="complete">
+        <div class="done">
+          <div class="ck">✓</div>
+          <h2>ANC Visit 2 done 🌟</h2>
+          <div class="ds">Nasrin · 32 weeks · <span id="doneTag"></span></div>
+          <div class="dots"><div class="d on">1</div><div class="d on">2</div><div class="d off">3</div><div class="d off">4</div></div>
+          <div class="ds" style="margin-top:12px">Visit 3 due · 17 June 2026 · 36 weeks</div>
+        </div>
+        <div class="summary">
+          <span class="st">✦ VISIT SUMMARY</span>
+          <div class="sg" id="sumGrid"></div>
+        </div>
+      </div>
+
+    </div><!-- /body -->
+
+    <div class="cta">
+      <button class="btn" id="next"></button>
+      <button class="btn ghost" id="back" style="display:none">← Back</button>
+    </div>
+  </div>
+</div>
+
+<p class="foot">Design mock-up for review — not a medical device. Clinical content is traced to the cited sources (Bangladesh STG, WHO ANC and 2024 anaemia guidance); the remaining step before live use is clinical sign-off.</p>
+
+<script>
+(function(){
+  var ORDER=['brief','screener','checks','decision','counsel','whatsapp','complete'];
+  var NEXTLABEL={brief:'Start — listen to her →',screener:'Done — see AI advice →',checks:'See AI recommendation →',decision:'Confirm and counsel Nasrin →',counsel:'Send advice to her phone →',whatsapp:'Complete ANC Visit 2 ✓',complete:'→ Go to next visit'};
+  var STEPMAP={brief:0,screener:0,checks:1,decision:2,counsel:2,whatsapp:2,complete:2};
+
+  // One unified list. Tag 'anaemia'/'uti' = ordinary cue (pre-selected for that demo case);
+  // '' = ordinary; 'danger' = red flag that triggers referral when tapped.
+  var SYMPTOMS=[
+    ['😩','Very tired','অনেক ক্লান্ত','anaemia'],
+    ['💫','Dizzy','মাথা ঘোরা','anaemia'],
+    ['😮‍💨','Breathless easily','সহজেই শ্বাসকষ্ট','anaemia'],
+    ['💓','Heart racing','বুক ধড়ফড়','anaemia'],
+    ['🚽','Burning urine','প্রস্রাবে জ্বালাপোড়া','uti'],
+    ['🤰','Lower belly pain','তলপেটে ব্যথা','uti'],
+    ['🌡️','Fever','জ্বর','uti'],
+    ['🤢','Nausea','বমি বমি ভাব',''],
+    ['🦵','Swollen feet','পা ফোলা',''],
+    ['🤕','Headache','মাথা ব্যথা',''],
+    ['🩸','Bleeding','রক্তপাত','danger'],
+    ['👁️','Blurred vision','চোখে ঝাপসা','danger'],
+    ['🚼','Baby not moving','বাচ্চা নড়ছে না','danger'],
+    ['🫅','Face / hands swollen','মুখ-হাত ফোলা','danger'],
+    ['⚡','Fits','খিঁচুনি','danger'],
+    ['💦','Waters broke','পানি ভাঙা','danger']
+  ];
+
+  var BRIEF={
+    anaemia:'🤰 ANC Visit 2 · 32 weeks · last visit normal (BP 110/70) · <b>previous delivery at home</b>',
+    uti:'🤰 ANC Visit 2 · 32 weeks · last visit normal (BP 110/70) · <b>previous delivery at home</b>'
+  };
+  var DONETAG={anaemia:'Anaemia treated · follow-up set',uti:'UTI treated · follow-up set'};
+  var SUM={
+    anaemia:[['🩸','Hb 8.5 — moderate'],['💊','Iron started'],['💪','BP 108/70'],['📅','Recheck 4 wks']],
+    uti:[['🧪','Dipstick + (UTI)'],['💊','Cephalexin 5 days'],['💪','BP 110/72'],['📅','Test of cure scheduled']]
+  };
+  // Plain-language patient messages — no clinical codes, no readings. [English, Bengali]
+  var WA={
+    anaemia:[
+      ["Take your iron + folic acid tablet every day. Don't stop, even when you feel better.",
+       "প্রতিদিন আয়রন ও ফলিক অ্যাসিড বড়ি খাবেন। ভালো বোধ করলেও বন্ধ করবেন না।"],
+      ["Don't drink tea or coffee within an hour of the tablet — lemon or guava water helps.",
+       "বড়ি খাওয়ার এক ঘণ্টার মধ্যে চা বা কফি খাবেন না — লেবু বা পেয়ারার পানি সাহায্য করে।"],
+      ["Eat iron-rich food often: lentils, eggs, green vegetables or fish.",
+       "প্রায়ই আয়রন-সমৃদ্ধ খাবার খাবেন: ডাল, ডিম, সবুজ শাকসবজি বা মাছ।"],
+      ["Plan to deliver at the health facility — arrange transport early.",
+       "স্বাস্থ্যকেন্দ্রে সন্তান প্রসবের পরিকল্পনা করুন — আগে থেকেই যানবাহন ঠিক করে রাখুন।"],
+      ["Go to hospital NOW if: heavy bleeding, bad headache, blurred vision, the baby stops moving, fits, or trouble breathing.",
+       "এখনই হাসপাতালে যান যদি: বেশি রক্তপাত, তীব্র মাথাব্যথা, চোখে ঝাপসা, বাচ্চা নড়াচড়া বন্ধ, খিঁচুনি বা শ্বাসকষ্ট হয়।"],
+      ["Your next visit is on 17 June 2026 — please come to the centre for a blood recheck.",
+       "আপনার পরবর্তী ভিজিট ১৭ জুন ২০২৬ — রক্ত পুনরায় পরীক্ষার জন্য কেন্দ্রে আসবেন।"]
+    ],
+    uti:[
+      ["Finish all your antibiotic tablets — even if you feel better after a day or two.",
+       "সব অ্যান্টিবায়োটিক বড়ি শেষ করবেন — এক-দুই দিনে ভালো বোধ করলেও।"],
+      ["Drink plenty of water and pass urine often — don't hold it in.",
+       "প্রচুর পানি পান করুন এবং ঘন ঘন প্রস্রাব করুন — চেপে রাখবেন না।"],
+      ["Plan to deliver at the health facility — arrange transport early.",
+       "স্বাস্থ্যকেন্দ্রে সন্তান প্রসবের পরিকল্পনা করুন — আগে থেকেই যানবাহন ঠিক করে রাখুন।"],
+      ["Go to hospital NOW if: fever, back pain, vomiting, tightening pains, or any bleeding.",
+       "এখনই হাসপাতালে যান যদি: জ্বর, পিঠে ব্যথা, বমি, পেটে চাপ ব্যথা বা রক্তপাত হয়।"],
+      ["Come back for a urine recheck after treatment, and for your next visit on 17 June 2026.",
+       "চিকিৎসার পর প্রস্রাব পুনরায় পরীক্ষা এবং ১৭ জুন ২০২৬ তারিখে পরবর্তী ভিজিটের জন্য ফিরে আসবেন।"]
+    ]
+  };
+  var waLang='bn';
+
+  // Prescribable items per condition. type:'std' = accept/modify/decline;
+  // type:'choice' = provider must pick which option (the either/or antibiotic).
+  var RX={
+    anaemia:[
+      {type:'std',  label:'Iron + folic acid', detail:'Elemental iron 120 mg/day + folic acid 400 µg/day, until Hb ≥11'},
+      {type:'std',  label:'Albendazole (deworming)', detail:'400 mg single dose (2nd/3rd trimester) — if not given this pregnancy'}
+    ],
+    uti:[
+      {type:'choice', label:'Antibiotic', options:[
+        'Nitrofurantoin 100 mg 12-hrly × 5 days',
+        'Cephalexin 500 mg 12-hrly × 5 days',
+        'Cefuroxime 250 mg 12-hrly × 5 days'
+      ], def:0, foot:'⚠ Nitrofurantoin: avoid from ~36 wks / term &amp; in G6PD deficiency.'}
+    ]
+  };
+  // per-session record of provider decisions
+  var rxState={};
+
+  var cond='anaemia', step=0;
+  var body=document.getElementById('body');
+
+  function buildGrid(el,arr){
+    el.innerHTML='';
+    arr.forEach(function(it){
+      var isDanger=it[3]==='danger';
+      var d=document.createElement('div'); d.className='opt';
+      d.innerHTML='<div class="em">'+it[0]+'</div><div class="t">'+it[1]+'<span class="bn">'+it[2]+'</span></div>';
+      d.addEventListener('click',function(){
+        if(isDanger){ d.classList.toggle('dzsel'); refreshRefer(); }
+        else d.classList.toggle('sel');
+      });
+      if(!isDanger && it[3]===cond) d.classList.add('sel'); // pre-select relevant cues
+      el.appendChild(d);
+    });
+  }
+  function refreshRefer(){
+    var any=document.querySelectorAll('#commonGrid .dzsel').length>0;
+    document.getElementById('referbar').classList.toggle('show',any);
+  }
+  function fillSummary(){
+    var g=document.getElementById('sumGrid'); g.innerHTML='';
+    // reflect the actually-prescribed antibiotic for UTI, if the provider chose one
+    var sumData=JSON.parse(JSON.stringify(SUM[cond]));
+    if(cond==='uti' && rxState[0] && rxState[0].kind==='choice'){
+      var picked=RX.uti[0].options[rxState[0].chosen]||'';
+      var shortName=picked.split(' ')[0]; // Nitrofurantoin / Cephalexin / Cefuroxime
+      sumData[1]=['💊', shortName+' 5 days'];
+    }
+    sumData.forEach(function(s){var d=document.createElement('div');var mark=/scheduled|due|recheck/i.test(s[1])?' →':' ✓';d.innerHTML=s[0]+' '+s[1]+mark;g.appendChild(d);});
+    document.getElementById('doneTag').textContent=DONETAG[cond];
+  }
+  function fillWhatsApp(){
+    var p=document.getElementById('waPreview'); p.innerHTML='';
+    var msgs=WA[cond];
+    msgs.forEach(function(m,idx){
+      var b=document.createElement('div'); b.className='wa-bubble';
+      var html='';
+      if(waLang==='en') html=m[0];
+      else if(waLang==='bn') html='<span class="wa-bn" style="margin-top:0;color:#1f2a44">'+m[1]+'</span>';
+      else html=m[0]+'<span class="wa-bn">'+m[1]+'</span>';
+      if(idx===msgs.length-1) html+='<span class="wa-time">10:48 ✓✓</span>';
+      b.innerHTML=html;
+      p.appendChild(b);
+    });
+  }
+
+  function buildPrescribe(){
+    rxState={};
+    var zone=document.querySelector('.rxz[data-cond="'+cond+'"]'); if(!zone)return;
+    zone.innerHTML='';
+    RX[cond].forEach(function(item,i){
+      var wrap=document.createElement('div'); wrap.className='rx-item acc'; wrap.id='rx'+i;
+      if(item.type==='choice'){
+        rxState[i]={kind:'choice',label:item.label,chosen:item.def};
+        var opts=item.options.map(function(o,oi){return '<button data-i="'+i+'" data-opt="'+oi+'" class="'+(oi===item.def?'on':'')+'">'+o+'</button>';}).join('');
+        wrap.innerHTML='<div class="rx-rec"><span class="lbl">AI suggests — pick one</span><b>'+item.label+'</b></div><div class="rx-choice">'+opts+'</div>'+(item.foot?'<div class="hint">'+item.foot+'</div>':'');
+      } else {
+        rxState[i]={kind:'std',label:item.label,act:'accept',reason:''};
+        wrap.innerHTML='<div class="rx-rec"><b>'+item.label+'</b> — '+item.detail+'</div>'+
+          '<div class="rx-btns">'+
+            '<button data-i="'+i+'" data-act="accept" class="sel">✓ Accept</button>'+
+            '<button data-i="'+i+'" data-act="modify">✎ Change</button>'+
+            '<button data-i="'+i+'" data-act="decline">✕ Decline</button>'+
+          '</div>'+
+          '<div class="rx-extra" id="rxx'+i+'"><input type="text" placeholder=""><div class="hint"></div></div>';
+      }
+      zone.appendChild(wrap);
+    });
+  }
+
+  // body-delegated handlers for the inline prescribe zone
+  document.getElementById('body').addEventListener('click',function(e){
+    var b=e.target.closest('.rxz button'); if(!b)return;
+    var i=b.getAttribute('data-i');
+    if(b.hasAttribute('data-opt')){
+      rxState[i].chosen=parseInt(b.getAttribute('data-opt'),10);
+      b.closest('.rx-choice').querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});
+      return;
+    }
+    var act=b.getAttribute('data-act'); if(!act)return;
+    rxState[i].act=act;
+    var wrap=document.getElementById('rx'+i);
+    wrap.querySelectorAll('.rx-btns button').forEach(function(x){x.classList.toggle('sel',x===b);});
+    wrap.classList.remove('acc','mod','dec');
+    wrap.classList.add(act==='accept'?'acc':act==='modify'?'mod':'dec');
+    var ex=document.getElementById('rxx'+i), inp=ex.querySelector('input'), hint=ex.querySelector('.hint');
+    if(act==='accept'){ ex.classList.remove('show'); rxState[i].reason=''; }
+    else { ex.classList.add('show');
+      inp.placeholder=act==='modify'?'What did you prescribe instead?':'Reason (optional)';
+      hint.textContent=act==='modify'?'Records what was actually prescribed.':'Optional — why this was not given.';
+    }
+  });
+  document.getElementById('body').addEventListener('input',function(e){
+    if(e.target.closest('.rxz') && e.target.tagName==='INPUT'){
+      var i=e.target.closest('.rx-item').id.replace('rx',''); rxState[i].reason=e.target.value;
+    }
+  });
+
+  function render(){
+    var key=ORDER[step];
+    // show the right screen (shared, or matching condition)
+    document.querySelectorAll('.scrn').forEach(function(s){
+      var match = s.getAttribute('data-screen')===key &&
+                  (!s.getAttribute('data-cond') || s.getAttribute('data-cond')===cond);
+      s.classList.toggle('live',match);
+    });
+    // header progress
+    var si=STEPMAP[key];
+    ['b0','b1','b2'].forEach(function(id,i){document.getElementById(id).classList.toggle('on',i<=si);});
+    ['l0','l1','l2'].forEach(function(id,i){document.getElementById(id).innerHTML=(i===si?'<b>'+document.getElementById(id).textContent.replace(/(^|>)\s*/,'')+'</b>':document.getElementById(id).textContent);});
+    // buttons
+    document.getElementById('next').textContent=NEXTLABEL[key];
+    document.getElementById('back').style.display=(step>0?'block':'none');
+    // dynamic content
+    document.getElementById('briefText').innerHTML=BRIEF[cond];
+    if(key==='decision') buildPrescribe();
+    if(key==='whatsapp') fillWhatsApp();
+    if(key==='complete') fillSummary();
+    body.scrollTop=0;
+  }
+
+  document.getElementById('next').addEventListener('click',function(){
+    if(step<ORDER.length-1){step++;render();}
+    else{step=0;render();} // loop from complete
+  });
+  document.getElementById('back').addEventListener('click',function(){ if(step>0){step--;render();} });
+  document.getElementById('restart').addEventListener('click',function(){ step=0; buildAll(); render(); });
+
+  // WhatsApp screen interactivity
+  document.querySelector('.wa-toggle').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    waLang=b.getAttribute('data-lang');
+    document.querySelectorAll('.wa-toggle button').forEach(function(x){x.classList.toggle('on',x===b);});
+    fillWhatsApp();
+  });
+  document.getElementById('waConsent').addEventListener('change',function(e){
+    document.getElementById('waSend').disabled=!e.target.checked;
+  });
+  document.getElementById('waSend').addEventListener('click',function(){
+    this.textContent='✓ Sent to Nasrin\u2019s phone';
+    this.style.background='#0f7a3d';
+  });
+
+  document.getElementById('seg').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    cond=b.getAttribute('data-cond'); step=0;
+    document.querySelectorAll('#seg button').forEach(function(x){x.classList.toggle('active',x===b);});
+    buildAll(); render();
+  });
+
+  function buildAll(){
+    buildGrid(document.getElementById('commonGrid'),SYMPTOMS);
+    refreshRefer();
+  }
+
+  buildAll(); render();
+})();
+</script>
+</body>
+</html>
